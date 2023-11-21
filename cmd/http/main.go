@@ -42,6 +42,8 @@ func main() {
 	db.SetConnMaxLifetime(time.Hour)
 
 	client := ent.NewClient(ent.Driver(drv))
+
+	client = client.Debug() // for debugging
 	if err := client.Schema.Create(ctx); err != nil {
 		log.Fatal("failed creating schema resources: ", err)
 	}

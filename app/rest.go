@@ -8,6 +8,7 @@ import (
 
 	"github.com/devshark/alchemy-fleet/adapters"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 type HttpServer struct {
@@ -36,9 +37,23 @@ func router(spacecraftService adapters.Spacecraft) *chi.Mux {
 		spacecraftService: spacecraftService,
 	}
 
+	mux.Use(middleware.Logger)
+	mux.Use(middleware.RequestID)
+	mux.Use(middleware.Heartbeat("/ping"))
+
+	// public endpoints
 	mux.Group(func(mux chi.Router) {
 		mux.Get("/spacecraft/{id}", server.GetSpacecraftById)
 		mux.Get("/spacecraft", server.ListSpacecrafts)
+	})
+
+	// auth endpoints
+	mux.Group(func(mux chi.Router) {
+		// credentials are hardcoded for simplicity
+		creds := map[string]string{
+			"username": "password",
+		}
+		mux.Use(middleware.BasicAuth("spacecraft", creds))
 		mux.Post("/spacecraft", server.CreateSpacecraft)
 		mux.Put("/spacecraft/{id}", server.UpdateSpacecraft)
 		mux.Delete("/spacecraft/{id}", server.DeleteSpacecraft)

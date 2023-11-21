@@ -35,7 +35,7 @@ func (s *MySQLAdapter) GetSpacecrafts(ctx context.Context, filters domain.Spacec
 	}
 
 	// status must be an exact value, cannot be a wildcard.
-	if filters.Status != "" {
+	if filters.Status != domain.SpacecraftStatusUnknown {
 		query = query.Where(spacecraft.StatusEQ(string(filters.Status)))
 	}
 
@@ -115,6 +115,11 @@ func (s *MySQLAdapter) UpdateSpacecraft(ctx context.Context, id int, spacecraft 
 		return nil, fmt.Errorf("failed to get spacecraft: %w", err)
 	}
 
+	// deleted is the same as not existing.
+	if spacecraftToUpdate.Deleted {
+		return nil, domain.ErrSpacecraftNotFound
+	}
+
 	// update the spacecraft
 	updatedSpacecraft, err := spacecraftToUpdate.Update().
 		SetName(spacecraft.Name).
@@ -151,6 +156,11 @@ func (s *MySQLAdapter) DeleteSpacecraft(ctx context.Context, id int) error {
 	// anything else
 	if err != nil {
 		return fmt.Errorf("failed to get spacecraft: %w", err)
+	}
+
+	// deleted is the same as not existing.
+	if spacecraftToDelete.Deleted {
+		return domain.ErrSpacecraftNotFound
 	}
 
 	// set spacecraft as deleted
