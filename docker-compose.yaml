@@ -8,8 +8,8 @@ services:
       MYSQL_DATABASE: database
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-    # ports:
-    #   - 3306:3306
+    ports:
+      - 3306:3306
     volumes:
       - ./database:/var/lib/mysql
     healthcheck:
@@ -28,7 +28,8 @@ services:
       - 8100:8080
     depends_on:
       database:
-        condition: service_completed_successfully
+        condition: service_healthy
+    command: /bin/http
     environment:
       DATABASE_HOST: database
       DATABASE_PORT: 3306

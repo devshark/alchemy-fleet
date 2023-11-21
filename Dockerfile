@@ -14,3 +14,5 @@ RUN apk update && \
   apk add --no-cache tzdata
 COPY --from=builder /build/bin /bin/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+ENTRYPOINT [ "/bin/http" ]

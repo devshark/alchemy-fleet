@@ -12,7 +12,7 @@ build:
 	CGO_ENABLED=0 go build -mod=vendor -ldflags \
 		"-w -s" \
 		-o bin/http \
-		-tags netgo -a ./cmd
+		-tags netgo -a ./cmd/http
 
 test:
 	CGO_ENABLED=1 go test -race -p 10 -shuffle on ./...
