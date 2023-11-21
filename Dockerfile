@@ -1,5 +1,8 @@
 FROM golang:alpine AS builder
 
+# for running Makefile and builds
+RUN apk update && apk upgrade && apk add --no-cache bash make git npm gcc musl-dev
+
 WORKDIR /build
 ADD . .
 
@@ -9,6 +12,5 @@ FROM alpine:latest
 
 RUN apk update && \
   apk add --no-cache tzdata
-RUN mkdir /etc/access-control/
 COPY --from=builder /build/bin /bin/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
