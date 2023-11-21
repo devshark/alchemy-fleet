@@ -1,0 +1,12 @@
+with-expecter: True
+mockname: "{{.InterfaceName}}"
+filename: "{{.MockName}}.go"
+dir: "{{.InterfaceDir}}/mocks"
+outpkg: mocks
+recursive: True
+packages:
+  github.com/devshark/alchemy-fleet/adapters:
+    config:
+      all: True
+    interfaces:
+      Spacecraft:
