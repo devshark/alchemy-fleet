@@ -38,6 +38,15 @@ func (s *HttpServer) UpdateSpacecraft(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// if status is not empty, but the parsed value is unknown, then the status is invalid.
+	status := domain.StringToSpacecraftStatus(spacecraftRequest.Status)
+	if spacecraftRequest.Status != "" && status == domain.SpacecraftStatusUnknown {
+		// respond(w, http.StatusBadRequest, errorResponse{Error: "invalid spacecraft status"})
+		respond(w, http.StatusBadRequest, genericResponse{Success: false})
+
+		return
+	}
+
 	ctx := r.Context()
 
 	// spacecraft, err := s.spacecraftService.UpdateSpacecraft(ctx, id, &spacecraftRequest)

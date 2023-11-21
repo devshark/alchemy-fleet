@@ -18,6 +18,14 @@ func (s *HttpServer) CreateSpacecraft(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	status := domain.StringToSpacecraftStatus(spacecraftRequest.Status)
+	if status == domain.SpacecraftStatusUnknown {
+		// respond(w, http.StatusBadRequest, errorResponse{Error: "invalid spacecraft status"})
+		respond(w, http.StatusBadRequest, genericResponse{Success: false})
+
+		return
+	}
+
 	ctx := r.Context()
 
 	// spacecraft, err := s.spacecraftService.CreateSpacecraft(ctx, &spacecraftRequest)
