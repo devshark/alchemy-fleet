@@ -17,6 +17,7 @@ const (
 	SpacecraftStatusUnknown SpacecraftStatus = "unknown"
 )
 
+// will try to match the string to a known status, if not found, will return unknown.
 func StringToSpacecraftStatus(s string) SpacecraftStatus {
 	switch s {
 	case string(SpacecraftStatusOperational):
